@@ -1,0 +1,40 @@
+# Node
+node_modules/
+.env
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs
+*.log
+pids
+*.pid
+*.seed
+
+# Runtime data
+pids/
+*.pid
+*.seed
+
+# npm
+package-lock.json
+
+# OS
+Thumbs.db
+
+# IDE
+.vscode/
+
+# Uploaded images
+/uploads/
+public/uploads/
+
+# dotfiles
+.env.local
+.env.test
+
+# Misc
+coverage/
+

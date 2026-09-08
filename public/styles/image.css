@@ -1,0 +1,214 @@
+/* -------------------------------------------------
+   Tokens — change a value here and it updates everywhere
+------------------------------------------------- */
+:root {
+  --bg: #F6F7F9;
+  --surface: #FFFFFF;
+  --border: #E4E7EC;
+  --ink: #1B1E27;
+  --ink-soft: #5B6270;
+
+  --accent: #EA580C;         /* decorative use: icons, avatar, badges */
+  --accent-strong: #C2410C;  /* buttons — deeper, so white text stays readable */
+  --teal: #0F766E;           /* the "compression saved" badge */
+
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --shadow: 0 1px 2px rgba(16, 24, 40, .04), 0 1px 3px rgba(16, 24, 40, .06);
+
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--bg);
+  line-height: 1.5;
+}
+
+h1, h2 {
+  font-family: var(--font-display);
+}
+
+a {
+  color: inherit;
+}
+
+/* -------------------------------------------------
+   Header — sticky, not fixed. It scrolls out of the way
+   naturally instead of needing a magic margin-top guess
+   on the content below it.
+------------------------------------------------- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  padding: 1rem clamp(1rem, 4vw, 2.5rem);
+
+  background: rgba(246, 247, 249, .85);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.2rem;
+  text-decoration: none;
+}
+
+.brand__mark {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.site-header__actions {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+/* -------------------------------------------------
+   Buttons — one filled "primary" style for the main
+   action, one quiet "ghost" style for everything else.
+   (Compress and Logout are not equally important, so
+   they shouldn't look the same.)
+------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .6rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: .88rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+
+.btn--primary {
+  background: var(--accent-strong);
+  color: #fff;
+}
+.btn--primary:hover {
+  background: #A8380A;
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--ink-soft);
+  border-color: var(--border);
+}
+.btn--ghost:hover {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--accent-strong);
+  outline-offset: 2px;
+}
+
+/* -------------------------------------------------
+   Toasts (success / error banners)
+------------------------------------------------- */
+.toast {
+  text-align: center;
+  padding: .7rem 1rem;
+  font-size: .9rem;
+  font-weight: 500;
+}
+.toast--success { background: #ECFDF5; color: #047857; }
+.toast--error   { background: #FEF2F2; color: #B91C1C; }
+
+/* -------------------------------------------------
+   Viewer — one photo, front and center. The header and
+   a single download button are the only other things on
+   the page, so nothing here competes with the photo.
+------------------------------------------------- */
+.viewer {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 3.5rem) clamp(1rem, 4vw, 2.5rem) 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.image {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+.image img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* -------------------------------------------------
+   Respect people who've asked their OS for less motion
+------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}
+
+/* -------------------------------------------------
+   Small screens
+------------------------------------------------- */
+@media (max-width: 560px) {
+  .site-header {
+    padding: .85rem 1rem;
+  }
+  .btn {
+    padding: .55rem .85rem;
+    font-size: .82rem;
+  }
+  .profile__stat {
+    flex-basis: 100%;
+    text-align: left;
+    padding-left: 0;
+    padding-top: .75rem;
+    margin-top: .25rem;
+    border-left: none;
+    border-top: 1px solid var(--border);
+  }
+  .viewer {
+    padding: 1.5rem 1rem 3rem;
+    gap: 1.1rem;
+  }
+}

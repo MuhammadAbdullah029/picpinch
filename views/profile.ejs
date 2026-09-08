@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Your PicPinch library — view and compress your photos.">
+  <title>
+    <%= (locals.user && user.name) ? user.name : 'Profile' %> | PicPinch
+  </title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles/profile.css">
+</head>
+
+<body>
+
+  <!-- Flash Notifications -->
+  <% if (locals.success_msg && success_msg.length > 0) { %>
+    <p class="toast toast--success" role="status"><%= success_msg %></p>
+  <% } %>
+
+  <% if (locals.error_msg && error_msg.length > 0) { %>
+    <p class="toast toast--error" role="alert"><%= error_msg %></p>
+  <% } %>
+
+  <% if (locals.error && error.length > 0) { %>
+    <p class="toast toast--error" role="alert"><%= error %></p>
+  <% } %>
+
+  <% if (locals.errorMessage) { %>
+    <p class="toast toast--error" role="alert"><%= errorMessage %></p>
+  <% } %>
+
+  <header class="site-header">
+    <a class="brand" href="/picpinch/">
+      <svg class="brand__mark" width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <polyline points="4 14 10 14 10 20" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        <polyline points="20 10 14 10 14 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        <line x1="14" y1="10" x2="21" y2="3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+        <line x1="3" y1="21" x2="10" y2="14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+      <span>PicPinch</span>
+    </a>
+
+    <nav class="site-header__actions" aria-label="Account actions">
+      <a class="btn btn--primary" href="/picpinch/">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <polyline points="4 14 10 14 10 20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <polyline points="20 10 14 10 14 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          <line x1="14" y1="10" x2="21" y2="3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          <line x1="3" y1="21" x2="10" y2="14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+        </svg>
+        Compress photo
+      </a>
+      <a class="btn btn--ghost" href="/api/v1/auth/logout">Log out</a>
+    </nav>
+  </header>
+
+  <main>
+    <% if (locals.user) { %>
+      <section class="profile">
+        <div class="profile__avatar" aria-hidden="true">
+          <%= user.name ? user.name.trim().charAt(0).toUpperCase() : 'U' %>
+        </div>
+        <div class="profile__info">
+          <h1 class="profile__name"><%= user.name %></h1>
+          <p class="profile__email"><%= user.email %></p>
+        </div>
+        <% if (locals.images) { %>
+          <div class="profile__stat">
+            <span class="profile__stat-number"><%= images.length %></span>
+            <span class="profile__stat-label"><%= images.length === 1 ? 'photo' : 'photos' %></span>
+          </div>
+        <% } %>
+      </section>
+    <% } %>
+
+    <section class="gallery" aria-label="Your photos">
+      <% if (locals.images && images.length > 0) { %>
+        <% images.forEach(function(image) { 
+            const publicUrl = image.url.startsWith('public') ? image.url.replace(/^public/, '') : (image.url.startsWith('/') ? image.url : '/' + image.url);
+            const filename = image.url.split('/').pop();
+        %>
+          <div class="photo">
+            <a href="/picpinch/image/<%= image._id %>">
+              <img src="<%= publicUrl %>" alt="<%= filename %>" loading="lazy">
+              
+              <% if (image.savedPercent) { %>
+                <span class="photo__badge">-<%= image.savedPercent %>%</span>
+              <% } %>
+            </a>
+
+            <a class="photo__download" href="<%= publicUrl %>" download aria-label="Download this photo">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+          </div>
+        <% }); %>
+      <% } else { %>
+        <div class="empty-state">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.5" />
+            <circle cx="8.5" cy="10.5" r="1.5" fill="currentColor" />
+            <path d="M21 15l-5-5-9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <h2>No photos yet</h2>
+          <p>Compress your first photo to see it appear here.</p>
+          <a class="btn btn--primary" href="/picpinch/">Compress a photo</a>
+        </div>
+      <% } %>
+    </section>
+  </main>
+
+</body>
+
+</html>

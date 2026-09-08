@@ -1,0 +1,304 @@
+:root {
+    /* Same palette as the gallery page (style.css), so the whole app
+       feels like one product instead of two apps stitched together. */
+    --bg-main: #f6f7f9;
+    --card-bg: #ffffff;
+    --card-border: #e4e7ec;
+    --input-bg: var(--bg-main);
+    --input-border: #d0d5dd;
+    --input-focus: #ea580c;
+    --text-main: #1b1e27;
+    --text-muted: #5b6270;
+
+    --accent-primary: #ea580c;   /* decorative use: icons, focus ring */
+    --accent-hover: #c2410c;     /* default for buttons/links — readable on white */
+    --accent-active: #9a3412;    /* pressed / hover state, one step darker */
+    --accent-shadow: rgba(234, 88, 12, 0.22);
+
+    --error-bg: #fef2f2;
+    --error-border: #fecaca;
+    --error-text: #dc2626;
+
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 20px;
+
+    --font-display: 'Space Grotesk', system-ui, sans-serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-body);
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Brand logo, sits above the card so the page reads as PicPinch
+   before it reads as "a login form" */
+.brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: .45rem;
+    margin-bottom: 1.25rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--text-main);
+    text-decoration: none;
+}
+.brand-logo svg {
+    color: var(--accent-primary);
+}
+.brand-logo:focus-visible {
+    outline: 2px solid var(--accent-hover);
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+}
+
+/* Main Card */
+.register-container {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 420px;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2rem;
+    box-shadow: 0 20px 25px -5px rgba(28, 25, 23, 0.04), 0 8px 10px -6px rgba(28, 25, 23, 0.02);
+}
+
+/* Brand Header */
+.brand-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.brand-title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text-main);
+    letter-spacing: -0.01em;
+}
+
+.brand-subtitle {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: 0.375rem;
+}
+
+/* Error Banner */
+.error-msg {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--error-bg);
+    border: 1px solid var(--error-border);
+    color: var(--error-text);
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+
+.error-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    flex-shrink: 0;
+}
+
+.success-msg {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #16a34a;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+}
+.success-icon { width: 1.25rem; height: 1.25rem; flex-shrink: 0; }
+
+/* Form Styles */
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-group label {
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.forgot-link {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--accent-hover);
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.forgot-link:hover {
+    color: var(--accent-active);
+    text-decoration: underline;
+}
+
+.input-with-action {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
+    border-radius: var(--radius-md);
+    color: var(--text-main);
+    font-size: 0.9375rem;
+    font-family: var(--font-body);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.input-with-action input {
+    padding-right: 2.75rem;
+}
+
+.form-group input::placeholder {
+    color: #a8a29e;
+}
+
+.form-group input:hover {
+    background-color: #ffffff;
+    border-color: #a8a29e;
+}
+
+.form-group input:focus {
+    outline: none;
+    background-color: #ffffff;
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.12);
+}
+
+/* Password Toggle Button */
+.toggle-btn {
+    position: absolute;
+    right: 0.5rem;
+    background: transparent;
+    border: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem;
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.toggle-btn:hover {
+    color: var(--text-main);
+    background-color: #f5f5f4;
+}
+
+.toggle-btn:focus-visible {
+    outline: 2px solid var(--accent-hover);
+}
+
+.toggle-btn.active {
+    color: var(--accent-hover);
+}
+
+.eye-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+/* Submit Button */
+.submit-btn {
+    width: 100%;
+    padding: 0.8125rem;
+    margin-top: 0.5rem;
+    background: var(--accent-hover);
+    color: #ffffff;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    box-shadow: 0 4px 12px var(--accent-shadow);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.submit-btn:hover {
+    background: var(--accent-active);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px var(--accent-shadow);
+}
+
+.submit-btn:focus-visible {
+    outline: 2px solid var(--accent-hover);
+    outline-offset: 2px;
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+}
+
+/* Footer Link */
+.footer-link {
+    text-align: center;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    margin-top: 1.75rem;
+}
+
+.footer-link a {
+    color: var(--accent-hover);
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.footer-link a:hover {
+    color: var(--accent-active);
+    text-decoration: underline;
+}
+
+.footer-link a:focus-visible {
+    outline: 2px solid var(--accent-hover);
+    border-radius: 0.25rem;
+}
