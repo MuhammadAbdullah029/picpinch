@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const required = ['PORT', 'MONGO_URI', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET', 'NODE_ENV', 'SESSION_SECRET', 'REDISURI'];
+const required = ['PORT', 'MONGO_URI', 'JWT_ACCESS_SECRET', 'JWT_REFRESH_SECRET', 'NODE_ENV', 'SESSION_SECRET', 'REDIS_URI'];
 
 for (const key of required) {
     if (!process.env[key]) {
@@ -15,5 +15,5 @@ module.exports = {
     refresh_secret: process.env.JWT_REFRESH_SECRET,
     node_env: process.env.NODE_ENV,
     session_secret: process.env.SESSION_SECRET,
-    redis_uri: process.env.REDISURI
+    redis_uri: process.env.REDIS_URI
 };

@@ -49,12 +49,7 @@
     if (!files || !files.length) return;
     var file = files[0];
 
-    // Example: a .png renamed to .jpg still reports as image/png here,
-    // so this checks the real file content, not just the extension.
-    if (file.type !== 'image/jpeg') {
-      showError('That\u2019s not a JPG. PicPinch only pinches JPG photos for now.');
-      return;
-    }
+    
     if (file.size > MAX_BYTES) {
       showError('That photo is over 20 MB. Try a smaller one.');
       return;
