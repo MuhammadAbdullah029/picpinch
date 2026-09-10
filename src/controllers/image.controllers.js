@@ -1,6 +1,7 @@
 const compress = require('../middlewares/compress.middleware');
 const Image = require('../models/Image');
 const path = require('path');
+const redis = require('../config/redis');
 
 const compressImage = async (req, res) => {
     try {
@@ -22,11 +23,17 @@ const compressImage = async (req, res) => {
 
         const url = path.relative(process.cwd(), image.outputPath).replace(/\\/g, '/');
         
+        const userId = req.user._id;
+
         const compressedImage = await Image.create({
-            userId: req.user?._id || req.user?.id,
+            userId,
             url,
             savedPercent
         });
+
+        if (userId) {
+            await redis.del(`user:${userId}:images`);
+        }
 
         req.flash('success_msg', 'Image successfully compressed!');
         res.redirect(`/picpinch/image/${compressedImage._id}`);
