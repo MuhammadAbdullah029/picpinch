@@ -1,13 +1,4 @@
-/* -------------------------------------------------
-   PicPinch — upload interactions
-   The form works fine without this file (it's a normal
-   <input type="file"> under the hood). This just adds
-   drag-and-drop, a filename preview, and friendlier
-   error text than the browser gives you by default.
-------------------------------------------------- */
 (function () {
-  // If someone drops a photo outside the dropzone, stop the
-  // browser from navigating away to show the image full-page.
   ['dragover', 'drop'].forEach(function (evt) {
     window.addEventListener(evt, function (e) {
       e.preventDefault();
@@ -23,8 +14,12 @@
   var filenameEl = document.getElementById('dropzone-filename');
   var clearBtn = document.getElementById('dropzone-clear');
   var errorEl = document.getElementById('dropzone-error');
+  var loader = document.getElementById('compress-loader');
+  var loaderText = document.getElementById('loader-text');
+  var submitBtn = form.querySelector('.dropzone__submit');
 
   var MAX_BYTES = 20 * 1024 * 1024; // 20 MB
+  var ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
   function formatSize(bytes) {
     if (bytes >= 1024 * 1024) {
@@ -34,6 +29,7 @@
   }
 
   function showError(message) {
+    input.value = ''; // FIX 1: throw away the bad file
     errorEl.textContent = message;
     errorEl.hidden = false;
     selectedRow.hidden = true;
@@ -49,7 +45,11 @@
     if (!files || !files.length) return;
     var file = files[0];
 
-    
+    // FIX 2: check the type (drag and drop skips "accept")
+    if (ALLOWED_TYPES.indexOf(file.type) === -1) {
+      showError('Please choose a JPG, PNG or WebP photo.');
+      return;
+    }
     if (file.size > MAX_BYTES) {
       showError('That photo is over 20 MB. Try a smaller one.');
       return;
@@ -89,7 +89,36 @@
     errorEl.hidden = true;
   });
 
-  // Toasts say their piece once, then get out of the way.
+  // Loader
+  var messages = [
+    'Squeezing out extra pixels',
+    'Shaking out the extra bytes',
+    'Making it light as a feather',
+    'Almost there\u2026'
+  ];
+  var timer;
+
+  form.addEventListener('submit', function (e) {
+    setTimeout(function () {
+      if (e.defaultPrevented || !form.checkValidity()) return;
+
+      loader.hidden = false;
+      submitBtn.disabled = true;
+
+      var i = 0;
+      timer = setInterval(function () {
+        i = (i + 1) % messages.length;
+        loaderText.textContent = messages[i];
+      }, 2000);
+    }, 0);
+  });
+
+  window.addEventListener('pageshow', function () {
+    loader.hidden = true;
+    submitBtn.disabled = false;
+    clearInterval(timer);
+  });
+
   document.querySelectorAll('.toast').forEach(function (toast) {
     setTimeout(function () {
       toast.style.transition = 'opacity .3s ease';

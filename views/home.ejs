@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Your PicPinch library — view and compress your photos.">
     <title>PicPinch</title>
+    <link rel="shortcut icon" href="/favicon.svg" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -55,6 +56,19 @@
             <a class="btn btn--ghost" href="/api/v1/auth/logout">Log out</a>
         </nav>
     </header>
+
+    <!-- Compressing loader -->
+    <div class="loader" id="compress-loader" role="status" aria-live="polite" hidden>
+        <div class="loader__card">
+            <div class="loader__stage" aria-hidden="true">
+                <span class="loader__arrow loader__arrow--left">→</span>
+                <span class="loader__photo"></span>
+                <span class="loader__arrow loader__arrow--right">←</span>
+            </div>
+            <p class="loader__title">Pinching your photo…</p>
+            <p class="loader__text" id="loader-text">Squeezing out extra pixels</p>
+        </div>
+    </div>
 
     <main class="shell">
 

@@ -8,6 +8,7 @@
     <title>
         PicPinch | <%= (locals.image && image._id) ? image._id : 'Photo' %>
     </title>
+    <link rel="shortcut icon" href="/favicon.svg" type="image/x-icon">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -58,6 +59,21 @@
         </nav>
     </header>
 
+    <!-- Deleting loader -->
+    <div class="loader" id="delete-loader" role="status" aria-live="polite" hidden>
+        <div class="loader__card">
+            <div class="loader__stage" aria-hidden="true">
+                <span class="loader__photo"></span>
+                <span class="loader__bin">
+                    <span class="loader__lid"></span>
+                    <span class="loader__can"></span>
+                </span>
+            </div>
+            <p class="loader__title">Deleting your photo…</p>
+            <p class="loader__text" id="delete-loader-text">Sweeping it into the bin</p>
+        </div>
+    </div>
+
     <main class="viewer">
         <% if (locals.image && image.url) { 
             const publicUrl = image.url.startsWith('public') ? image.url.replace(/^public/, '') : (image.url.startsWith('/') ? image.url : '/' + image.url);
@@ -66,12 +82,29 @@
             <div class="image">
                 <img src="<%= publicUrl %>" alt="<%= filename %>">
             </div>
-            <a class="btn btn--primary photo__download" href="<%= publicUrl %>" download="<%= filename %>">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                </svg>
-                Download photo
-            </a>
+
+            <!-- Action Controls Group -->
+            <div class="viewer__actions">
+                <a class="btn btn--primary photo__download" href="<%= publicUrl %>" download="<%= filename %>">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M12 4v11m0 0l-4-4m4 4l4-4M5 20h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    Download photo
+                </a>
+
+                <form action="/api/v1/image/delete/<%= image._id %>" method="POST" onsubmit="return confirm('Are you sure you want to delete this photo?');">
+                    <button type="submit" class="btn btn--danger photo__delete">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                        Delete photo
+                    </button>
+                </form>
+            </div>
+
         <% } else { %>
             <div class="empty-state">
                 <h2>Photo not found</h2>
@@ -80,7 +113,46 @@
             </div>
         <% } %>
     </main>
+    <script>
+        (function () {
+            var form = document.querySelector('form[action^="/api/v1/image/delete/"]');
+            var loader = document.getElementById('delete-loader');
+            var loaderText = document.getElementById('delete-loader-text');
+            if (!form || !loader) return;
 
+            var submitBtn = form.querySelector('button[type="submit"]');
+            var messages = [
+                'Sweeping it into the bin',
+                'Emptying the pixels',
+                'Tidying up your library',
+                'Almost gone\u2026'
+            ];
+            var timer;
+
+            form.addEventListener('submit', function (e) {
+                // Wait one tick so the confirm() popup can cancel first
+                setTimeout(function () {
+                    if (e.defaultPrevented) return;
+
+                    loader.hidden = false;
+                    submitBtn.disabled = true;
+
+                    var i = 0;
+                    timer = setInterval(function () {
+                        i = (i + 1) % messages.length;
+                        loaderText.textContent = messages[i];
+                    }, 2000);
+                }, 0);
+            });
+
+            // Back button: don't leave the loader stuck on screen
+            window.addEventListener('pageshow', function () {
+                loader.hidden = true;
+                submitBtn.disabled = false;
+                clearInterval(timer);
+            });
+        })();
+    </script>
 </body>
 
 </html>

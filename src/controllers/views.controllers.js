@@ -17,17 +17,16 @@ const getProfile = async (req, res) => {
         const cachedImages = await redis.get(cacheKey);
 
         let images;
-        if(cachedImages){
+        if (cachedImages) {
             images = JSON.parse(cachedImages);
-            console.log('Serve from redis');
-            
-        } 
-        else{
+        } else {
             images = await Image.find({ userId }).lean();
             await redis.set(cacheKey, JSON.stringify(images), 'EX', 3600);
         }
 
-        if (!images) req.flash('success_msg', 'No photos yet');
+        if (images.length === 0) {
+            req.flash('success_msg', 'No photos yet');
+        }
 
         res.render('profile', { images });
     } catch (error) {
@@ -45,16 +44,13 @@ const getPicPinch = async (req, res) => {
         const cachedImages = await redis.get(cacheKey);
 
         let images;
-        if(cachedImages){
+        if (cachedImages) {
             images = JSON.parse(cachedImages);
-            console.log('Serve from redis');
-            
-        } 
-        else{
+        } else {
             images = await Image.find({ userId }).lean();
             await redis.set(cacheKey, JSON.stringify(images), 'EX', 3600);
         }
-        
+
         res.render('home', { images });
     } catch (error) {
         console.error('Error in home route:', error);
@@ -65,7 +61,7 @@ const getPicPinch = async (req, res) => {
 
 const getImage = async (req, res) => {
     try {
-        const userId = req.user._id;
+        const userId = req.user._id.toString();
         const { id } = req.params;
         const cacheKey = `image:${id}`;
 
@@ -74,11 +70,10 @@ const getImage = async (req, res) => {
 
         if (cachedImage) {
             image = JSON.parse(cachedImage);
-            if (image.userId !== userId.toString()) {
+            if (String(image.userId) !== userId) {
                 req.flash('error_msg', 'Image not found or unauthorized.');
                 return res.redirect('/picpinch/profile');
             }
-            console.log('Serve single image from redis');
         } else {
             image = await Image.findOne({ _id: id, userId }).lean();
 
@@ -103,5 +98,5 @@ module.exports = {
     getLogin, 
     getProfile, 
     getPicPinch, 
-    getImage 
+    getImage,
 };

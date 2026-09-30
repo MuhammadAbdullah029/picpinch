@@ -11,6 +11,9 @@
   --accent: #EA580C;         /* decorative use: icons, avatar, badges */
   --accent-strong: #C2410C;  /* buttons — deeper, so white text stays readable */
   --teal: #0F766E;           /* the "compression saved" badge */
+  
+  --danger: #DC2626;         /* red for destructive actions */
+  --danger-hover: #B91C1C;
 
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -49,9 +52,7 @@ a {
 }
 
 /* -------------------------------------------------
-   Header — sticky, not fixed. It scrolls out of the way
-   naturally instead of needing a magic margin-top guess
-   on the content below it.
+   Header
 ------------------------------------------------- */
 .site-header {
   position: sticky;
@@ -92,14 +93,12 @@ a {
 }
 
 /* -------------------------------------------------
-   Buttons — one filled "primary" style for the main
-   action, one quiet "ghost" style for everything else.
-   (Compress and Logout are not equally important, so
-   they shouldn't look the same.)
+   Buttons
 ------------------------------------------------- */
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: .4rem;
   padding: .6rem 1.1rem;
   border-radius: 999px;
@@ -109,6 +108,7 @@ a {
   font-size: .88rem;
   text-decoration: none;
   white-space: nowrap;
+  cursor: pointer;
   transition: background-color .15s ease, border-color .15s ease;
 }
 
@@ -130,6 +130,14 @@ a {
   color: var(--ink);
 }
 
+.btn--danger {
+  background: var(--danger);
+  color: #fff;
+}
+.btn--danger:hover {
+  background: var(--danger-hover);
+}
+
 a:focus-visible,
 button:focus-visible {
   outline: 2px solid var(--accent-strong);
@@ -137,21 +145,26 @@ button:focus-visible {
 }
 
 /* -------------------------------------------------
-   Toasts (success / error banners)
+   Toasts
 ------------------------------------------------- */
 .toast {
   text-align: center;
   padding: .7rem 1rem;
   font-size: .9rem;
   font-weight: 500;
+  width: fit-content;
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 999;
+  border-radius: 5px;
 }
 .toast--success { background: #ECFDF5; color: #047857; }
 .toast--error   { background: #FEF2F2; color: #B91C1C; }
 
 /* -------------------------------------------------
-   Viewer — one photo, front and center. The header and
-   a single download button are the only other things on
-   the page, so nothing here competes with the photo.
+   Viewer
 ------------------------------------------------- */
 .viewer {
   max-width: 900px;
@@ -178,8 +191,104 @@ button:focus-visible {
   height: auto;
 }
 
+.viewer__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .8rem;
+  flex-wrap: wrap;
+}
+
+.loader {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(15, 15, 20, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+}
+.loader[hidden] { display: none; }
+
+.loader__card {
+    background: #fff;
+    color: #111;
+    padding: 28px 36px;
+    border-radius: 16px;
+    text-align: center;
+    min-width: 260px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.loader__stage {
+    position: relative;
+    width: 120px;
+    height: 90px;
+    margin: 0 auto 14px;
+}
+
+/* The little photo that falls into the bin */
+.loader__photo {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 44px;
+    height: 34px;
+    margin-left: -22px;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #7dd3fc, #a78bfa);
+    animation: drop-in 1.4s ease-in infinite;
+}
+
+/* The bin */
+.loader__bin {
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 46px;
+    margin-left: -23px;
+}
+.loader__can {
+    display: block;
+    height: 40px;
+    background: #ef4444;
+    border-radius: 3px 3px 8px 8px;
+    clip-path: polygon(0 0, 100% 0, 88% 100%, 12% 100%);
+}
+.loader__lid {
+    position: absolute;
+    top: -6px;
+    left: -4px;
+    width: 54px;
+    height: 6px;
+    background: #b91c1c;
+    border-radius: 3px;
+    transform-origin: left center;
+    animation: lid-bounce 1.4s ease-in-out infinite;
+    z-index: 2;
+}
+
+.loader__title { margin: 0 0 4px; font-weight: 600; font-size: 1.05rem; }
+.loader__text  { margin: 0; font-size: 0.9rem; opacity: 0.65; }
+
+@keyframes drop-in {
+    0%   { transform: translateY(0) scale(1) rotate(0); opacity: 1; }
+    60%  { transform: translateY(38px) scale(0.6) rotate(12deg); opacity: 1; }
+    80%  { transform: translateY(46px) scale(0.2) rotate(20deg); opacity: 0; }
+    100% { transform: translateY(46px) scale(0.2) rotate(20deg); opacity: 0; }
+}
+@keyframes lid-bounce {
+    0%, 55%   { transform: rotate(0); }
+    70%       { transform: rotate(-25deg); }
+    85%, 100% { transform: rotate(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loader__photo, .loader__lid { animation: none; }
+}
+
 /* -------------------------------------------------
-   Respect people who've asked their OS for less motion
+   Respect reduced motion
 ------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -198,17 +307,16 @@ button:focus-visible {
     padding: .55rem .85rem;
     font-size: .82rem;
   }
-  .profile__stat {
-    flex-basis: 100%;
-    text-align: left;
-    padding-left: 0;
-    padding-top: .75rem;
-    margin-top: .25rem;
-    border-left: none;
-    border-top: 1px solid var(--border);
-  }
   .viewer {
     padding: 1.5rem 1rem 3rem;
     gap: 1.1rem;
+  }
+  .viewer__actions {
+    width: 100%;
+    flex-direction: column;
+  }
+  .viewer__actions .btn,
+  .viewer__actions form {
+    width: 100%;
   }
 }

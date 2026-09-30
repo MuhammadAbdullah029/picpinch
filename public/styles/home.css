@@ -404,6 +404,71 @@ button:focus-visible {
   font-weight: 600;
 }
 
+.loader {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(15, 15, 20, 0.55);
+    backdrop-filter: blur(4px);
+    z-index: 1000;
+}
+.loader[hidden] { display: none; }
+
+.loader__card {
+    background: #fff;
+    color: #111;
+    padding: 28px 36px;
+    border-radius: 16px;
+    text-align: center;
+    min-width: 260px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+}
+
+.loader__stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    height: 64px;
+    margin-bottom: 14px;
+}
+
+.loader__photo {
+    width: 56px;
+    height: 44px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #7dd3fc, #a78bfa);
+    animation: pinch 1.2s ease-in-out infinite;
+}
+
+.loader__arrow {
+    font-size: 24px;
+    font-weight: 600;
+}
+.loader__arrow--left  { animation: nudge-right 1.2s ease-in-out infinite; }
+.loader__arrow--right { animation: nudge-left 1.2s ease-in-out infinite; }
+
+.loader__title { margin: 0 0 4px; font-weight: 600; font-size: 1.05rem; }
+.loader__text  { margin: 0; font-size: 0.9rem; opacity: 0.65; }
+
+@keyframes pinch {
+    0%, 100% { transform: scale(1, 1); }
+    50%      { transform: scale(0.55, 0.9); }
+}
+@keyframes nudge-right {
+    0%, 100% { transform: translateX(-6px); }
+    50%      { transform: translateX(4px); }
+}
+@keyframes nudge-left {
+    0%, 100% { transform: translateX(6px); }
+    50%      { transform: translateX(-4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .loader__photo, .loader__arrow { animation: none; }
+}
+
 /* -------------------------------------------------
    Respect people who've asked their OS for less motion
 ------------------------------------------------- */
